@@ -1,11 +1,13 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-export interface IExample extends Document {
+export interface User extends Document {
   name: string;
+  section: string[];
 }
 
-const ExampleSchema = new Schema({
+const UserSchema = new Schema({
   name: { type: String, required: true },
+  section: String,
 });
 
-export const ExampleModel = mongoose.model<IExample>("Example", ExampleSchema);
+export const UserModel = mongoose.model<User>("User", UserSchema);
