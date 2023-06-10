@@ -7,10 +7,12 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 80;
-const mongoUri = process.env.MONGODB_URI || "";
+const mongoUrl = process.env.MONGODB_URI || "";
+
+console.log({ mongoUrl });
 
 mongoose
-  .connect(mongoUri)
+  .connect(mongoUrl)
   .then(() => {
     console.log("Connected to MongoDB");
   })
@@ -19,7 +21,7 @@ mongoose
   });
 
 app.use(express.json());
-app.use("/auth", router);
+app.use("/", router);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
