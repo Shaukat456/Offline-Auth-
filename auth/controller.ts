@@ -1,17 +1,7 @@
 import { Request, Response } from "express";
-import { User, UserModel } from "../models/model";
+import { User, UserModel } from "../models/User";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-
-export async function getAllUsers(req: Request, res: Response): Promise<void> {
-  try {
-    const data = await UserModel.find();
-    res.json(data);
-  } catch (error) {
-    console.error("Error in getExample:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-}
 
 export async function registerUser(req: Request, res: Response): Promise<void> {
   try {
@@ -65,6 +55,16 @@ export async function loginUser(req: Request, res: Response): Promise<void> {
     res.status(200).json({ token, msg: "user signIn succesfully" });
   } catch (error) {
     console.error("Error in loginUser:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
+
+export async function getAllUsers(req: Request, res: Response): Promise<void> {
+  try {
+    const data = await UserModel.find();
+    res.json(data);
+  } catch (error) {
+    console.error("Error in getExample:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 }
