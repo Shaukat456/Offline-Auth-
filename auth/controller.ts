@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
-import { User, UserModel } from "../models/User";
+import { UserModel } from "../models/User";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { Error } from "mongoose";
 
 export async function registerUser(req: Request, res: Response): Promise<void> {
   try {
@@ -64,7 +65,19 @@ export async function getAllUsers(req: Request, res: Response): Promise<void> {
     const data = await UserModel.find();
     res.json(data);
   } catch (error) {
-    console.error("Error in getExample:", error);
+    console.error("Error in ", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
+export async function removeUser(req: Request, res: Response): Promise<void> {
+  const { id } = req.body;
+  try {
+    const data = await UserModel.findByIdAndDelete(id ? id : "");
+
+    !data ? res.json("") : res.json(data);
+  } catch (error) {
+    if (error instanceof Error) console.error("Error ", error?.message);
+
     res.status(500).json({ error: "Internal server error" });
   }
 }

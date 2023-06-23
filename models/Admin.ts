@@ -1,11 +1,6 @@
 import mongoose, { Document, Schema, mongo } from "mongoose";
 import Joi from "joi";
-
-export interface Admin extends Document {
-  name: string;
-  email: string;
-  password: string;
-}
+import { Admin } from "../Types";
 
 const AdminSchema = Joi.object({
   username: Joi.string().alphanum().min(3).max(30).required(),

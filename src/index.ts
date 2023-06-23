@@ -20,6 +20,7 @@ mongoose
 
 app.use(express.json());
 
+// if user logged in , only then redirect to this route
 app.use("/auth", authRoutes);
 // app.use("/admin", );
 
