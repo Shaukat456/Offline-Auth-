@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import { UserModel } from "../models/User";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { Error } from "mongoose";
+import { User } from "../Types";
+import { Aggregate } from "mongoose";
 
 export async function registerUser(req: Request, res: Response): Promise<void> {
   try {
@@ -23,13 +24,12 @@ export async function registerUser(req: Request, res: Response): Promise<void> {
     console.log({ password });
 
     // Create a new user instance
-    const user: User = new UserModel({
+    const user = new UserModel({
       name,
       password: password,
     });
 
     const savedUser = await user.save();
-
     console.log({ savedUser });
 
     res.status(201).json(savedUser);
@@ -78,6 +78,51 @@ export async function removeUser(req: Request, res: Response): Promise<void> {
   } catch (error) {
     if (error instanceof Error) console.error("Error ", error?.message);
 
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
+
+export async function getProducerByUserId(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const { id: userId } = req.params;
+
+  try {
+    const data = await UserModel.aggregate([
+      {
+        $match: {
+          _id: userId,
+        },
+      },
+      // Add additional aggregation stages if needed
+    ]);
+
+    res.send(data);
+  } catch (error) {
+    console.error("Error: ", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
+
+export async function getUserByProducerId(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const { id: producerId } = req.params;
+
+  try {
+    const data = await UserModel.aggregate([
+      {
+        $match: {
+          producerId: producerId,
+        },
+      },
+    ]);
+
+    res.send(data);
+  } catch (error) {
+    console.error("Error: ", error);
     res.status(500).json({ error: "Internal server error" });
   }
 }
