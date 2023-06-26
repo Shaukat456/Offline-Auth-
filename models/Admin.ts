@@ -13,4 +13,4 @@ const AdminSchema = Joi.object({
   }),
 });
 
-export const UserModel = mongoose.model<Admin>("Admin", AdminSchema as any);
+export const AdminModel = mongoose.model<Admin>("Admin", AdminSchema as any);

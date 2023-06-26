@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { UserModel } from "../models/User";
+import { AdminModel } from "../models/Admin";
+
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { User } from "../Types";
@@ -7,10 +9,9 @@ import { Aggregate } from "mongoose";
 
 export async function registerUser(req: Request, res: Response): Promise<void> {
   try {
-    const { name, password } = req.body;
-
+    const { username, email, password } = req.body as User;
     // Check if the user already exists in the database
-    const existingUser = await UserModel.findOne({ name, password });
+    const existingUser = await UserModel.findOne({ email, password });
 
     if (existingUser) {
       res
@@ -19,13 +20,11 @@ export async function registerUser(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    // Hash the password
     await bcrypt.hash(password, 10);
-    console.log({ password });
 
-    // Create a new user instance
     const user = new UserModel({
-      name,
+      username,
+      email,
       password: password,
     });
 
@@ -45,6 +44,8 @@ export async function loginUser(req: Request, res: Response): Promise<void> {
 
     // Check if the user exists in the database
     const existingUser = await UserModel.findOne({ name, password });
+
+    console.log({ existingUser });
 
     if (!existingUser) {
       res.status(404).json({ error: "User not found" });
@@ -82,28 +83,28 @@ export async function removeUser(req: Request, res: Response): Promise<void> {
   }
 }
 
-export async function getProducerByUserId(
-  req: Request,
-  res: Response
-): Promise<void> {
-  const { id: userId } = req.params;
+// export async function getProducerByUserId(
+//   req: Request,
+//   res: Response
+// ): Promise<void> {
+//   const { id: userId } = req.params;
 
-  try {
-    const data = await UserModel.aggregate([
-      {
-        $match: {
-          _id: userId,
-        },
-      },
-      // Add additional aggregation stages if needed
-    ]);
+//   try {
+//     const data = await AdminModel.aggregate([
+//       {
+//         $match: {
+//           _id: userId,
+//         },
+//       },
+//       // Add additional aggregation stages if needed
+//     ]);
 
-    res.send(data);
-  } catch (error) {
-    console.error("Error: ", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-}
+//     res.send(data);
+//   } catch (error) {
+//     console.error("Error: ", error);
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// }
 
 export async function getUserByProducerId(
   req: Request,
