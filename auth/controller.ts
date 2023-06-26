@@ -110,7 +110,6 @@ export async function getUserByProducerId(
   res: Response
 ): Promise<void> {
   const { id: producerId } = req.params;
-
   try {
     const data = await UserModel.aggregate([
       {

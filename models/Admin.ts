@@ -6,7 +6,7 @@ const AdminSchema = Joi.object({
   username: Joi.string().alphanum().min(3).max(30).required(),
   password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")),
   repeat_password: Joi.ref("password"),
-  AdminId: Joi.number().integer().min(0).max(1000),
+  users: [{ type: Schema.Types.ObjectId, ref: "User" }],
   email: Joi.string().email({
     minDomainSegments: 2,
     tlds: { allow: ["com", "net"] },
